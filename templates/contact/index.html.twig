@@ -1,0 +1,9 @@
+{% extends 'layouts/base.html.twig' %}
+{% block body %}
+    <br>
+        {% for message in app.session.flashbag.get('success') %}
+			<li>{{ message }}</li>
+		{% endfor %}
+        <br>
+    {{ form(form) }}
+{% endblock %}
