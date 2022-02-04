@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\PostType;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,12 +18,19 @@ class PostController extends AbstractController
     /**
      * @Route("/post", name="post")
      */
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response
     {
         $entityManager = $doctrine->getManager();
-        $posts = $entityManager->getRepository(Post::class)->findAll();
+        $posts = $entityManager->getRepository(Post::class)->findAllPosts();
+
+        $postPaginate = $paginator->paginate(
+            $posts, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            3 /*limit per page*/
+        );
+
         return $this->render('post/index.html.twig', [
-            'posts' => $posts,
+            'posts' => $postPaginate,
         ]);
     }
 

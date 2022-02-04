@@ -9,10 +9,33 @@
 </style>
 
 <div class="example-wrapper">
-    <ul>
+    <div class="count">
+        {{ posts.getTotalItemCount }}
+    </div>
+    <table>
+        <tr>
+            {# sorting of properties based on query components #}
+            <th>{{ knp_pagination_sortable(posts, 'Id', 'p.id') }}</th>
+            <th{% if posts.isSorted('p.title') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(posts, 'Title', 'p.title') }}
+            </th>
+            <th{% if posts.isSorted(['a.created_at']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(posts, 'Release', ['a.created_at']) }}
+            </th>
+        </tr>
+
+        {# table body #}
         {% for post in posts %}
-            <li><strong>{{ post.title }}</strong></li>
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
+                <td>{{ post.id }}</td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.createdAt|date('Y-m-d') }}</td>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(posts) }}
+    </div>
 </div>
 {% endblock %}
