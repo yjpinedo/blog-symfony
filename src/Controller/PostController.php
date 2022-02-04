@@ -40,6 +40,7 @@ class PostController extends AbstractController
      */
     public function create(Request $request, ManagerRegistry $doctrine, SluggerInterface $slugger): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $entityManager = $doctrine->getManager();
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);

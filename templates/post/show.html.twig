@@ -17,7 +17,11 @@
 			{% endif %}
 			/
 			{{post.createdAt|date('d/m/Y')}}</h5>
-		<a href="#" class="btn btn-warning">Editar</a>
+		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+			{% if post.getUser.getId == app.user.id %}
+				<a href="#" class="btn btn-warning">Editar</a>
+			{% endif %}
+		{% endif %}
 	</div>
 	<br>
 	<p>{{ post.text }}</p>

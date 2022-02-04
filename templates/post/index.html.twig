@@ -5,8 +5,10 @@
 
 {% block body %}
 	<br>
-    <a href="{{ path('create-post') }}" class="btn btn-success btn-block">Registrar</a>
-    <hr>
+	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+		<a href="{{ path('create-post') }}" class="btn btn-success btn-block">Registrar</a>
+		<hr>
+	{% endif %}
 
 	<ul class="list-group">
 		{% for post in posts %}
@@ -16,7 +18,7 @@
 		{% endfor %}
 	</ul>
 
-    <br>
+	<br>
 
 	{# display navigation #}
 	<div class="navigation">
