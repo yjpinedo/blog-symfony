@@ -1,0 +1,24 @@
+{% extends 'layouts/base.html.twig' %}
+{% block body %}
+	<div class="text-center mt-4">
+		{% if post.image %}
+			<img src="{{ asset('uploads/images/' ~ post.image) }}" class="rounded img-fluid" alt="..." width="200" height="200">
+		{% else %}
+			<img src="https://dummyimage.com/200x200/fff/aaa" class="rounded img-fluid" alt="..." width="200" height="200">
+		{% endif %}
+	</div>
+	<br>
+	<div class="d-flex justify-content-between align-items-center">
+		<h5>
+			{% if post.getUser.getName != '' %}
+				<strong>{{ post.getUser.getName }}</strong>
+			{% else %}
+				<strong>Sin usuario</strong>
+			{% endif %}
+			/
+			{{post.createdAt|date('d/m/Y')}}</h5>
+		<a href="#" class="btn btn-warning">Editar</a>
+	</div>
+	<br>
+	<p>{{ post.text }}</p>
+{% endblock %}

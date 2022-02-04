@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
+use PhpParser\Node\Expr\New_;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +17,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class PostController extends AbstractController
 {
     /**
-     * @Route("/post", name="post")
+     * @Route("/post", name="post-index")
      */
     public function index(ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response
     {
@@ -33,7 +34,6 @@ class PostController extends AbstractController
             'posts' => $postPaginate,
         ]);
     }
-
 
     /**
      * @Route("/post/create", name="create-post")
@@ -82,6 +82,26 @@ class PostController extends AbstractController
 
         return $this->render('post/create.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/post/show/{id}", name="show-post")
+     */
+    public function show($id, ManagerRegistry $doctrine)
+    {
+        return $this->render('post/show.html.twig', [
+            'post' => $doctrine->getRepository(Post::class)->find($id),
+        ]);
+    }
+
+    /**
+     * @Route("/post/my-post", name="my-post")
+     */
+    public function myPost(ManagerRegistry $doctrine)
+    {
+        return $this->render('post/my-post.html.twig', [
+            'posts' => $doctrine->getRepository(Post::class)->findBy(['user' => $this->getUser()]),
         ]);
     }
 }
