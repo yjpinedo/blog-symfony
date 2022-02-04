@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html.twig' %}
+{% block title %}Contacto{% endblock %}
 {% block body %}
     <br>
         {% for message in app.session.flashbag.get('success') %}
