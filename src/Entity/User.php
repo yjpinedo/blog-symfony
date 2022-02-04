@@ -47,6 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->roles = ['ROLE_BLOGGER'];
     }
 
     public function getId(): ?int

@@ -27,7 +27,6 @@ class RegisterController extends AbstractController
                 $user,
                 $form['password']->getData()
             ));
-            $user->setRoles(['bloggers']);
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Registered User successfull');
