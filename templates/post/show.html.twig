@@ -13,13 +13,13 @@
 			{% if post.getUser.getName != '' %}
 				<strong>{{ post.getUser.getName }}</strong>
 			{% else %}
-				<strong>Sin usuario</strong>
+				<strong>Updated name user</strong>
 			{% endif %}
 			/
 			{{post.createdAt|date('d/m/Y')}}</h5>
 		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 			{% if post.getUser.getId == app.user.id %}
-				<a href="#" class="btn btn-warning">Editar</a>
+				<a href="{{ path('edit-post', {id : post.id}) }}" class="btn btn-warning">Editar</a>
 			{% endif %}
 		{% endif %}
 	</div>

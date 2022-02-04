@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 
 class PostController extends AbstractController
 {
@@ -93,6 +94,62 @@ class PostController extends AbstractController
     {
         return $this->render('post/show.html.twig', [
             'post' => $doctrine->getRepository(Post::class)->find($id),
+        ]);
+    }
+
+    /**
+     * @Route("/post/edit/{id}", name="edit-post")
+     */
+    public function edit($id, ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $post = $doctrine->getRepository(Post::class)->find($id);
+        $entityManager = $doctrine->getManager();
+
+        $post->setImage(
+            new File($this->getParameter('images_directory') . '/' . $post->getImage())
+        );
+
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            if ($user) {
+
+                $post->setUser($user);
+                $image = $form->get('image')->getData();
+
+                if ($image) {
+
+                    $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
+
+                    try {
+                        $image->move(
+                            $this->getParameter('images_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        $this->addFlash('danger', $e->getMessage());
+                        return $this->redirectToRoute('create-post');
+                    }
+
+                    $post->setImage($newFilename);
+                }
+
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Registered post successfully');
+            } else {
+                $this->addFlash('danger', 'Not registered post');
+            }
+            return $this->redirectToRoute('show-post', ['post' => $post]);
+        }
+
+        return $this->render('post/edit.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

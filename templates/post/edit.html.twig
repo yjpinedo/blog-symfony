@@ -1,0 +1,17 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Hello PostController!
+{% endblock %}
+
+{% block body %}
+	<ul>
+		{% for message in app.session.flashbag.get('success') %}
+			<li>{{ message }}</li>
+		{% endfor %}
+
+		{% for message in app.session.flashbag.get('danger') %}
+			<li>{{ message }}</li>
+		{% endfor %}
+	</ul>
+	{{ form(form) }}
+{% endblock %}
